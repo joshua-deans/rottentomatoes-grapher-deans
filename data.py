@@ -4,11 +4,6 @@ import re
 import matplotlib.pyplot as plt
 import sys
 
-''' DELETE
-filename = 'tv_ids.json'
-with open(filename) as f_obj:
-    tv_ids = json.load(f_obj)
-'''
 
 def get_actor_page(actor_name):
     # This section gets the actor's name
@@ -24,6 +19,7 @@ def get_actor_page(actor_name):
     actor_page = 'https://www.rottentomatoes.com/celebrity/' + actor_url
 
     return actor_page
+
 
 def web_scrape(actor_page):
     try:
@@ -67,6 +63,7 @@ def web_scrape(actor_page):
 
     return name, score_search # soon to return actor's name as well
 
+
 def graph_data(data):
     actor_name, score_data = data
 
@@ -81,7 +78,6 @@ def graph_data(data):
 
     # fig = plt.figure()
 
-
     plt.scatter(movie_number, score_array)
 
     plt.title(actor_name, fontsize=24)
@@ -93,10 +89,12 @@ def graph_data(data):
 
     plt.show()
 
+
 def main(actor_name):
     actor_page = get_actor_page(actor_name)
     score_data = web_scrape(actor_page)
     print(score_data)
+
 
 if __name__ == "__main__":
     actor_name = input("Enter name: ")

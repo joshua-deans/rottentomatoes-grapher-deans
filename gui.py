@@ -28,7 +28,6 @@ f = plt.figure()
 a = f.add_subplot(111)
 
 
-
 def update_graph(data):
     actor_name, score_data = data
     a.clear()
@@ -67,12 +66,14 @@ def axis_settings(subplot, score_array, y_ax):
 
 
 def line_of_best_fit(x, y):
+    # Simply uses numpy to get line of best fit
     m, b = np.polyfit(np.array(x, dtype=float), np.array(y, dtype=float), 1)
     x2 = np.linspace(1, len(x))
     a.plot(x2, m*x2+b, color="red")
 
 
 def popup(msg):
+    # Displays pop up with given message.
     popup = tk.Tk()
     popup.wm_title("Incorrect Input")
     label = ttk.Label(popup, text=msg)
@@ -115,6 +116,7 @@ def organize_data(score_data):
 
 
 def update_annotation(event):
+    # deletes all previous annotations
     if annot_list:
         for ann in annot_list:
             try:
@@ -124,18 +126,20 @@ def update_annotation(event):
 
     if not event.xdata or not event.ydata:
         pass
+    # checks if cursor is within a certain plot to display an annotation
     else:
         for i in range(len(movie_number)):
             if abs(event.xdata - movie_number[i]) <= .23 and abs(event.ydata - int(score_array[i])) <= 1.2:
                 txt = title_array[i]+"\n"+"Score: "+score_array[i]+"%"+"\n"+year_array[i]
                 bbox_props = dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=1, alpha=0.75)
-                annot = a.annotate(txt, (movie_number[i], int(score_array[i])), xytext=(event.xdata+.28, event.ydata+2), visible=True,
-                        bbox=bbox_props, fontsize=10)
+                annot = a.annotate(txt, (movie_number[i], int(score_array[i])), xytext=(event.xdata+.28, event.ydata+2),
+                                   visible=True, bbox=bbox_props, fontsize=10)
                 annot_list.append(annot)
-    # f.canvas.draw()
+    f.canvas.draw()
 
 
 def get_link(event):
+    # if click event happens within certain plot, opens associated URL
     if not event.xdata or not event.ydata:
         pass
     else:
@@ -220,8 +224,6 @@ class ActorSearchPage(tk.Frame):
         entry = ttk.Entry(self, width=30)
         entry.pack(pady=10, padx=10)
         entry.bind("<Return>", (lambda event: change_page(self, controller, entry)))
-
-        # self.controller.bind("<Return>", change_page(self, controller, entry))
 
         button1 = ttk.Button(self, text="Search Actor/Director",
                              command=lambda: change_page(self, controller, entry))

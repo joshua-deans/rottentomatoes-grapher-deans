@@ -29,6 +29,8 @@ a = f.add_subplot(111)
 
 
 def update_graph(data):
+    global autoscale
+    autoscale = 0
     actor_name, score_data = data
     a.clear()
     x, y, title_array, url_array, year_array = organize_data(score_data)
@@ -37,7 +39,7 @@ def update_graph(data):
     line_of_best_fit(x, y)
 
     a.set_title(actor_name)
-    axis_settings(a, y, 0)
+    axis_settings(a, y, autoscale)
     global annot_list
     annot_list = []
 
@@ -132,10 +134,26 @@ def update_annotation(event):
             if abs(event.xdata - movie_number[i]) <= .23 and abs(event.ydata - int(score_array[i])) <= 1.2:
                 txt = title_array[i]+"\n"+"Score: "+score_array[i]+"%"+"\n"+year_array[i]
                 bbox_props = dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=1, alpha=0.75)
-                annot = a.annotate(txt, (movie_number[i], int(score_array[i])), xytext=(event.xdata+.28, event.ydata+2),
+                x_place, y_place = scale_annotation(event, a, title_array[i], len(movie_number))
+                annot = a.annotate(txt, (movie_number[i], int(score_array[i])), xytext=(x_place, y_place),
                                    visible=True, bbox=bbox_props, fontsize=10)
+
                 annot_list.append(annot)
     f.canvas.draw()
+
+
+def scale_annotation(event, subplot, movie_title, movie_count):
+    add_chars = 0
+    x_min, x_max = subplot.get_xlim()
+    y_min, y_max = subplot.get_ylim()
+    range = y_max - y_min
+    print(y_max)
+    if len(movie_title) > 10:
+        add_chars = len(movie_title) - 10
+    x_place = min(event.xdata + .28, x_max-3.75*movie_count/26-.33*movie_count/26*add_chars)
+    y_place = min(event.ydata + 2, y_max-13.75*range/104)
+
+    return x_place, y_place
 
 
 def get_link(event):
@@ -147,6 +165,9 @@ def get_link(event):
             if abs(event.xdata - movie_number[i]) <= .23 and abs(event.ydata - int(score_array[i])) <= 1.2:
                 webbrowser.open(url_array[i])
 
+
+def save_image(a=None):
+    print("OK")
 
 class RT(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -167,6 +188,8 @@ class RT(tk.Tk):
 
         menubar = tk.Menu(container)
         filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Save Image")
+        filemenu.add_separator()
         filemenu.add_command(label="Exit", command=quit)
         menubar.add_cascade(label="File", menu=filemenu)
 
@@ -238,14 +261,17 @@ class ActorGraphPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-
+        auto = 1
         self.createGraph()
+
+        c = ttk.Checkbutton(self, text="Scale y-axis", variable=auto, command=lambda: self.change_scale(a, auto),
+                            state='ACTIVE')
+        c.var = auto
+        c.pack()
 
         button1 = ttk.Button(self, text="Back",
                              command=lambda: controller.show_frame(ActorSearchPage))
         button1.pack()
-
-
 
     def createGraph(self):
         canvas = FigureCanvasTkAgg(f, self)
@@ -257,10 +283,15 @@ class ActorGraphPage(tk.Frame):
         canvas.mpl_connect('button_press_event', get_link)
         canvas.mpl_connect('motion_notify_event', update_annotation)
 
+    def change_scale(self, subplot, autoscale):
+        axis_settings(subplot, score_array, autoscale)
+        f.canvas.draw()
+
 
 class FranchiseSearchPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
         self.controller = controller
         label = ttk.Label(self, text="Search for a Franchise", font=LARGE_FONT)
         label.pack(pady=10, padx=10)

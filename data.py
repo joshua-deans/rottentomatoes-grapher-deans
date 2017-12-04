@@ -47,17 +47,11 @@ def web_scrape(actor_page):
     score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w: ]+)\"
                                [\w \\<>'/"=-]+<span[ ]class=\"tMeterScore">[\d]+%</span>
                                [\w\s \\'/"-=]+</span>[\w\s \\'/"-=]+</td>[\w\s \\'/"-=]+>
-                               [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">
+                               [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">[\w\s \\'/"-=:<\.]+>[\D]+>
+                               #[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
+                               [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>
+                               [\w\s \\'/"-=]+>(?P<year>\d{4})</td>
                                """, str(resp_data)[start_point:end_point], re.X)
-
-    if not score_search:
-        return False
-
-    year_search = re.findall(r"""(?P<year>\d{4})</td>
-                               """, str(resp_data)[start_point:end_point], re.X)
-
-    for i in range(len(score_search)):
-        score_search[i] += (str(year_search[i]),)
 
     score_search = score_search[::-1] # reverse the search to be chronological order
 

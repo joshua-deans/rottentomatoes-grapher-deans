@@ -35,13 +35,13 @@ def web_scrape(actor_page):
     name = name_search.group('actor_name')
 
     start_point = re.search(r"""<h2>MOVIES</h2>\\n""", str(resp_data))
-    if start_point != None:
+    if start_point is not None:
         start_point = start_point.end()
     else:
         return False
 
     end_point = re.search(r"""<h2>TV</h2>""", str(resp_data))
-    if end_point != None:
+    if end_point is not None:
         end_point = end_point.start()
 
     score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w: ]+)\"

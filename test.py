@@ -31,29 +31,31 @@ start_point = start_point.end()
 end_point = re.search(r"""<h2>TV</h2>""", str(data))
 end_point = end_point.start()
 
-'''
-score_search = re.findall(r"""<td\sdata-rating=\"[\d]+\"\sdata-title=\"[\w: ]+\" 
-                           [\w \\<>'/"=-]+<span[ ]class=\"tMeterScore">[\d]+%</span>
-                           [\w\s \\'/"-=]+</span>[\w\s \\'/"-=]+</td>[\w\s \\'/"-=]+>
-                           [\w\s \\'/"-=]+href="[/\w_]+">[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
-                           [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
-                           [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
-                           [\w\s \\'/"-=]+>\d\d\d\d
-                           """, str(data)[start_point:end_point], re.X)
-'''
 
 score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w: ]+)\"
                            [\w \\<>'/"=-]+<span[ ]class=\"tMeterScore">[\d]+%</span>
                            [\w\s \\'/"-=]+</span>[\w\s \\'/"-=]+</td>[\w\s \\'/"-=]+>
-                           [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">
+                           [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">[\w\s \\'/"-=:<\.]+>[\D]+>
+                           #[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
+                           [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>
+                           [\w\s \\'/"-=]+>(?P<year>\d{4})</td>
                            """, str(data)[start_point:end_point], re.X)
 
-year_search = re.findall(r"""(?P<year>\d{4})</td>
-                           """, str(data)[start_point:end_point], re.X)
+'''
+score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w: ]+)\"
+                               [\w \\<>'/"=-]+<span[ ]class=\"tMeterScore">[\d]+%</span>
+                               [\w\s \\'/"-=]+</span>[\w\s \\'/"-=]+</td>[\w\s \\'/"-=]+>
+                               [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">
+                               """, str(resp_data)[start_point:end_point], re.X)
+'''
+#year_search = re.findall(r"""(?P<year>\d{4})</td>
+#                           """, str(data)[start_point:end_point], re.X)
 
-print(year_search)
+#print(year_search)
 
-length = len(score_search)
+#length = len(score_search)
 
-for i in range(length):
-    score_search[i] += (str(year_search[i]),)
+#for i in range(length):
+#    score_search[i] += (str(year_search[i]),)
+
+print(score_search)

@@ -223,15 +223,15 @@ overall Rotten Tomatoes score of a given actor/actress or director."""), font=NO
 
         button1 = ttk.Button(self, text="View Graph of Actor/Director",
                              command=lambda: controller.show_frame(ActorSearchPage))
-        button1.pack(pady=10, padx=10)
+        button1.pack(pady=5, padx=10)
 
-        # button2 = ttk.Button(self, text="View Graph of Franchises (Coming Soon)",
-        #                     command=lambda: controller.show_frame(FranchiseSearchPage))
-        # button2.pack()
+        button2 = ttk.Button(self, text="View Graph of Franchises (Coming Soon)",
+                            command=lambda: controller.show_frame(FranchiseSearchPage))
+        button2.pack(pady=5, padx=10)
 
         button3 = ttk.Button(self, text="Exit",
                             command=quit)
-        button3.pack()
+        button3.pack(pady=5, padx=10)
 
 
 class ActorSearchPage(tk.Frame):
@@ -250,11 +250,11 @@ class ActorSearchPage(tk.Frame):
 
         button1 = ttk.Button(self, text="Search Actor/Director",
                              command=lambda: change_page(self, controller, entry))
-        button1.pack(pady=10, padx=10)
+        button1.pack(pady=5, padx=10)
 
         button2 = ttk.Button(self, text="Go Back to Main Page",
                              command=lambda: controller.show_frame(StartPage))
-        button2.pack()
+        button2.pack(pady=5, padx=10)
 
 
 class ActorGraphPage(tk.Frame):

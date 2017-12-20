@@ -34,19 +34,21 @@ def update_graph(data):
     actor_name, score_data = data
     a.clear()
     x, y, title_array, url_array, year_array = organize_data(score_data)
+    print(x)
+    print(y)
 
     a.scatter(x, y, color="black")
     line_of_best_fit(x, y)
 
     a.set_title(actor_name)
-    axis_settings(a, y, autoscale)
+    axis_settings(a, y)
     global annot_list
     annot_list = []
 
     f.canvas.draw()
 
 
-def axis_settings(subplot, score_array, y_ax):
+def axis_settings(subplot, score_array):
     subplot.xaxis.set_major_locator(MaxNLocator(integer=True))
     subplot.xaxis.set_minor_locator(MultipleLocator(1))
     subplot.yaxis.set_major_locator(MultipleLocator(10))
@@ -54,22 +56,20 @@ def axis_settings(subplot, score_array, y_ax):
     subplot.set_xlabel("Movie Number")
     subplot.set_ylabel("Tomatometer %")
 
-    if not y_ax:
-        int_score_array = [int(i) for i in score_array]
-        max_y = int(math.ceil(float(max(int_score_array))/10)*10)
-        min_y = int(math.floor(float(min(int_score_array))/10)*10)
-        if max(int_score_array) % 10 == 0:
-            max_y += 4
-        if min(int_score_array) % 10 == 0:
-            min_y -= 4
-        subplot.set_ylim([min_y, max_y])
-    else:
-        subplot.set_ylim([0, 100])
+    int_score_array = [int(i) for i in score_array]
+    max_y = int(math.ceil(float(max(int_score_array))/10)*10)
+    min_y = int(math.floor(float(min(int_score_array))/10)*10)
+    if max(int_score_array) % 10 == 0:
+        max_y += 4
+    if min(int_score_array) % 10 == 0:
+        min_y -= 4
+    subplot.set_ylim([min_y, max_y])
 
 
 def line_of_best_fit(x, y):
     # Simply uses numpy to get line of best fit
     m, b = np.polyfit(np.array(x, dtype=float), np.array(y, dtype=float), 1)
+    print(m, b)
     x2 = np.linspace(1, len(x))
     a.plot(x2, m*x2+b, color="red")
 
@@ -108,7 +108,7 @@ def organize_data(score_data):
     length = len(score_data)
     global movie_number, score_array, title_array, url_array, year_array
     movie_number = [n+1 for n in range(length)]
-    score_array = [movie[0] for movie in score_data]
+    score_array = [int(movie[0]) for movie in score_data]
 
     title_array = [movie[1] for movie in score_data]
     url_array = ["https://www.rottentomatoes.com" + movie[2] for movie in score_data]
@@ -132,7 +132,7 @@ def update_annotation(event):
     else:
         for i in range(len(movie_number)):
             if abs(event.xdata - movie_number[i]) <= .23 and abs(event.ydata - int(score_array[i])) <= 1.2:
-                txt = title_array[i]+"\n"+"Score: "+score_array[i]+"%"+"\n"+year_array[i]
+                txt = title_array[i]+"\n"+"Score: "+str(score_array[i])+"%"+"\n"+year_array[i]
                 bbox_props = dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=1, alpha=0.75)
                 x_place, y_place = scale_annotation(event, a, title_array[i], len(movie_number))
                 annot = a.annotate(txt, (movie_number[i], int(score_array[i])), xytext=(x_place, y_place),
@@ -151,7 +151,7 @@ def scale_annotation(event, subplot, movie_title, movie_count):
     if len(movie_title) > 10:
         add_chars = len(movie_title) - 10
     x_place = min(event.xdata + .28, x_max-3.75*movie_count/26-.33*movie_count/26*add_chars)
-    y_place = min(event.ydata + 2, y_max-13.75*range/104)
+    y_place = min(event.ydata + 2.5, y_max-13.75*range/104)
 
     return x_place, y_place
 
@@ -261,13 +261,7 @@ class ActorGraphPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        auto = 1
         self.createGraph()
-
-        c = ttk.Checkbutton(self, text="Scale y-axis", variable=auto, command=lambda: self.change_scale(a, auto),
-                            state='ACTIVE')
-        c.var = auto
-        c.pack()
 
         button1 = ttk.Button(self, text="Back",
                              command=lambda: controller.show_frame(ActorSearchPage))
@@ -282,10 +276,6 @@ class ActorGraphPage(tk.Frame):
 
         canvas.mpl_connect('button_press_event', get_link)
         canvas.mpl_connect('motion_notify_event', update_annotation)
-
-    def change_scale(self, subplot, autoscale):
-        axis_settings(subplot, score_array, autoscale)
-        f.canvas.draw()
 
 
 class FranchiseSearchPage(tk.Frame):

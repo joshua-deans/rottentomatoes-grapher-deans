@@ -34,8 +34,6 @@ def update_graph(data):
     actor_name, score_data = data
     a.clear()
     x, y, title_array, url_array, year_array = organize_data(score_data)
-    print(x)
-    print(y)
 
     a.scatter(x, y, color="black")
     line_of_best_fit(x, y)
@@ -69,7 +67,6 @@ def axis_settings(subplot, score_array):
 def line_of_best_fit(x, y):
     # Simply uses numpy to get line of best fit
     m, b = np.polyfit(np.array(x, dtype=float), np.array(y, dtype=float), 1)
-    print(m, b)
     x2 = np.linspace(1, len(x))
     a.plot(x2, m*x2+b, color="red")
 
@@ -147,7 +144,7 @@ def scale_annotation(event, subplot, movie_title, movie_count):
     x_min, x_max = subplot.get_xlim()
     y_min, y_max = subplot.get_ylim()
     range = y_max - y_min
-    print(y_max)
+
     if len(movie_title) > 10:
         add_chars = len(movie_title) - 10
     x_place = min(event.xdata + .28, x_max-3.75*movie_count/26-.33*movie_count/26*add_chars)

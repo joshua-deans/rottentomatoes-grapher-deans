@@ -14,20 +14,25 @@ def get_actor_page(actor_name):
     while "." in actor_url:
         actor_url = actor_url.replace(".","")
 
-    actor_url = actor_url.replace(" ", "_")
+    actor_url1 = actor_url.replace(" ", "_")
+    actor_url2 = actor_url.replace(" ", "-")
 
-    actor_page = 'https://www.rottentomatoes.com/celebrity/' + actor_url
+    actor_page1 = 'https://www.rottentomatoes.com/celebrity/' + actor_url1
+    actor_page2 = 'https://www.rottentomatoes.com/celebrity/' + actor_url2
 
-    return actor_page
+    return actor_page1, actor_page2
 
 
 def web_scrape(actor_page):
+    actor_page1, actor_page2 = actor_page
     try:
-        resp = urllib.request.urlopen(actor_page)
+        resp = urllib.request.urlopen(actor_page1)
     except Exception as e:
-        return False
-    else:
-        resp_data = resp.read()
+        try:
+            resp = urllib.request.urlopen(actor_page2)
+        except Exception as e:
+            return False
+    resp_data = resp.read()
 
     # Add search for actor's namet
     name_search = re.search(r"""(?P<actor_name>[\w.:\- ]+)</h1>""",
@@ -44,12 +49,11 @@ def web_scrape(actor_page):
     if end_point is not None:
         end_point = end_point.start()
 
-    score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w: ]+)\"
+    score_search = re.findall(r"""<td\sdata-rating=\"(?P<score>[\d]+)\"\sdata-title=\"(?P<title>[\w:\-\.,() &\'\?]+)\"
                                [\w \\<>'/"=-]+<span[ ]class=\"tMeterScore">[\d]+%</span>
                                [\w\s \\'/"-=]+</span>[\w\s \\'/"-=]+</td>[\w\s \\'/"-=]+>
                                [\w\s \\'/"-=]+href="(?P<url>[/\w_]+)">[\w\s \\'/"-=:<\.]+>[\D]+>
-                               #[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
-                               [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>#[\w\s \\'/"-=]+>
+                               [\w\s \\'/"-=]+>[\w\s \\'/"-=]+>
                                [\w\s \\'/"-=]+>(?P<year>\d{4})</td>
                                """, str(resp_data)[start_point:end_point], re.X)
 

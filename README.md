@@ -5,6 +5,7 @@
 
 ### Currently working on:
  - Adding another mode where the trend can be viewed for films in a given franchise (ie Marvel or Star Wars).
+ - I realize that edge detection with annotations have issues whenever the window is expanded/shrunk. I'll work on a fix for this.
  - Transferring Python code to an executable file using cx_Freeze.
 
 ### Changes to (potentially) come:

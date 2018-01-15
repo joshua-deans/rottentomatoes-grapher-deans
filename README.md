@@ -5,7 +5,7 @@
 
 ### Currently working on:
  - Adding another mode where the trend can be viewed for films in a given franchise (ie Marvel or Star Wars).
- - Encorporating an executable file using cx_Freeze. Have made attempts
+ - Transferring Python code to an executable file using cx_Freeze.
 
 ### Changes to (potentially) come:
 - Tick boxes for options to change the plot

@@ -1,5 +1,7 @@
 # Tomatometer Grapher
 
+## I PLAN ON PUTTING THIS PROJECT ONLINE. I AM CURRENTLY LEARNING NODEJS, AND WILL BE GOING ABOUT ADDING THIS ONLINE. THEREFORE, I WON'T BE PROVIDING UPDATES TO THIS CODE
+
 #### The Tomatometer Grapher is a visualization tool, that graphs the overall Rotten Tomatoes score of a given actor/actress or director. To start the program, run main.py (previously gui.py).
 #### The framework for this project was inspired largely by SentDex's great Tkinter tutorial. I used that as a starting point, and have gradually been expanding on that via the Tkinter and matplotlib documentation
 
